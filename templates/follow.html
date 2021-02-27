@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Подборка постов{% endblock %}
+{% block header %}Подборка постов{% endblock %}
+{% block content %}
+    <div class="container">
+           <h1> Подборка постов</h1>
+
+           {% include "includes/menu.html" with follow=True %}
+                {% for post in page %}
+                {% include "includes/card_post.html" %}
+                {% endfor %}
+        </div>
+
+        {% if page.has_other_pages %}
+            {% include "includes/paginator.html" with items=page paginator=paginator%}
+        {% endif %}
+
+{% endblock %}

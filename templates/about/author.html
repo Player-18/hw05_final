@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+{% load user_filters %}
+  <main role="main" class="container">
+    <div class="row">
+      <!-- Левый вспомогательный блок -->
+      <div class="col-md-3 mb-3 mt-1">
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <div class="h3">
+                  Об авторе
+                </div> 
+              </li>
+              <li class="list-group-item">
+                <div class="h6 text-muted">
+                  Трофимов Михаил
+                </div>
+              </li>
+            </ul>                                               
+          </div>                    
+        </div>                
+      </div>
+      <!-- Тело страницы -->
+      <div class="col-md-9">
+        <div class="card-body">                    
+          <div class="card-text">
+            <p>Меня зовут Миша, меня вдохновляет перспектива сделать что-то
+            полезное, чем будут пользоваться люди со всего мира.
+            В программирование пришёл по случайности, написал первый код и 
+            понял, что это, то самое!<br>
+            Это ссылка на мой GitHub: https://github.com/Player-18<br>
+            Надеюсь в будующем, там будет много достойных проектов:)
+
+            </p>
+          </div>                    
+        </div>                
+      </div>            
+    </div>        
+  </main>
+{% endblock %}
