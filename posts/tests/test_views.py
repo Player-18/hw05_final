@@ -178,19 +178,6 @@ class ViewPageContextTest(TestCase):
         image = response.context.get('post').image
         self.assertEqual(image, self.test_post.image)
 
-    def test_cache(self):
-        response1 = self.user_1_client.get(reverse('index'))
-        post = Post.objects.create(author=self.user_1, text='test')
-        response2 = self.user_1_client.get(reverse('index'))
-        Post.objects.filter(id=post.id).delete()
-
-        response3 = self.user_1_client.get(reverse('index'))
-        self.assertEqual(response2.content, response3.content)
-
-        cache.clear()
-        response4 = self.user_1_client.get(reverse('index'))
-        self.assertEqual(response1.content, response4.content)
-
 
 class FollowTest(TestCase):
     @classmethod
