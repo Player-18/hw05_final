@@ -55,7 +55,7 @@ def profile(request, username):
     follow_count = Follow.objects.filter(author=author).count()
     follow1_count = Follow.objects.filter(user=author).count()
     following = Follow.objects.filter(user__username=request.user,
-                                      author=author)
+                                      author=author).exists()
 
     context = {
         "page": page,

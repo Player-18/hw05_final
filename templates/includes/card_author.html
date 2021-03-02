@@ -23,18 +23,21 @@
                                 </div> 
                         </li> 
                 </ul> 
-        </div> 
-</div> 
+
 <li class="list-group-item">
-        {% if following %}
-        <a class="btn btn-lg btn-light" 
-                href='/{{author.username}}/unfollow/' role="button"> 
-                Отписаться 
-        </a> 
-        {% else %}
-        <a class="btn btn-lg btn-primary" 
-                href="/{{author.username}}/follow/" role="button">
-        Подписаться 
-        </a>
+        {% if user != author and user.is_authenticated %}
+                {% if following %}
+                <a class="btn btn-lg btn-light" 
+                        href='/{{author.username}}/unfollow/' role="button"> 
+                        Отписаться 
+                </a> 
+                {% else %}
+                <a class="btn btn-lg btn-primary" 
+                        href="/{{author.username}}/follow/" role="button">
+                Подписаться 
+                </a>
+                {% endif %}
+        </li>
         {% endif %}
-    </li> 
+        </div>
+</div>

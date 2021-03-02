@@ -1,4 +1,5 @@
 from django.test import Client, TestCase
+from django.urls import reverse
 
 from posts.models import Group, Post, User
 
@@ -47,6 +48,7 @@ class UrlTest(TestCase):
         urls = [
             '/new/',
             f'/{self.user_1}/{self.test_post.id}/edit/',
+            '/follow/',
         ]
 
         for url in urls:
@@ -93,3 +95,39 @@ class UrlTest(TestCase):
         url = "/random/"
         response = self.guest_client.get(url)
         self.assertEqual(response.status_code, 404)
+
+    def test_follow(self):
+        """Проверяем, что страница работает"""
+        response = self.authorized_client_1.get('/follow/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_profile_follow(self):
+        """Проверяем , что редирект при подписке верный"""
+        url = f'/{self.user_1}/follow/'
+        response = self.authorized_client_2.get(url, follow=True)
+        redir = f'/{self.user_1}/'
+        self.assertRedirects(response, redir)
+
+    def test_profile_unfollow(self):
+        """Проверяем, что при отписке редирект и данные на стр верные"""
+        self.authorized_client_2.post(
+            reverse('profile_follow', args=[self.user_1]))
+        response1 = self.authorized_client_2.get(reverse('follow_index'))
+        count_posts = len(response1.context['page'])
+        self.assertEqual(count_posts, 1)
+
+        url = f'/{self.user_1}/unfollow/'
+        response2 = self.authorized_client_2.get(url, follow=True)
+        redir = f'/{self.user_1}/'
+        self.assertRedirects(response2, redir)
+
+        response3 = self.authorized_client_2.get(reverse('follow_index'))
+        count_posts2 = len(response3.context['page'])
+        self.assertEqual(count_posts2, 0)
+
+    def test_url_comment(self):
+        """Проверяем редирект"""
+        url = f'/{self.user_1}/{self.test_post.id}/comment'
+        response = self.authorized_client_2.get(url, follow=True)
+        redir = f'/{self.user_1}/{self.test_post.id}/'
+        self.assertRedirects(response, redir)

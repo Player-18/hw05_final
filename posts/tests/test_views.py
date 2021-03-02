@@ -3,6 +3,7 @@ import tempfile
 
 from django import forms
 from django.conf import settings
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -177,6 +178,19 @@ class ViewPageContextTest(TestCase):
         image = response.context.get('post').image
         self.assertEqual(image, self.test_post.image)
 
+    def test_cache(self):
+        response1 = self.user_1_client.get(reverse('index'))
+        post = Post.objects.create(author=self.user_1, text='test')
+        response2 = self.user_1_client.get(reverse('index'))
+        Post.objects.filter(id=post.id).delete()
+
+        response3 = self.user_1_client.get(reverse('index'))
+        self.assertEqual(response2.content, response3.content)
+
+        cache.clear()
+        response4 = self.user_1_client.get(reverse('index'))
+        self.assertEqual(response1.content, response4.content)
+
 
 class FollowTest(TestCase):
     @classmethod
@@ -219,6 +233,8 @@ class FollowTest(TestCase):
 
         self.guest = Client()
 
+        cache.clear()
+
     def test_auth_follow(self):
         follow = Follow.objects.all()
         self.assertEqual(follow.count(), 0)
@@ -251,12 +267,12 @@ class FollowTest(TestCase):
     def test_new_recording_create_in_list_subscriber(self):
         self.auth_client.post(
             reverse('profile_follow', args=[self.second_author]))
-        response = self.auth_client.get('/follow/')
+        response = self.auth_client.get(reverse('follow_index'))
         count_posts = len(response.context['page'])
         self.assertEqual(count_posts, 1)
 
     def test_new_recording_dont_create_in_list_subscriber(self):
-        response = self.auth_client.get('/follow/')
+        response = self.auth_client.get(reverse('follow_index'))
         count_posts = len(response.context['page'])
         self.assertEqual(count_posts, 0)
 
@@ -269,3 +285,16 @@ class FollowTest(TestCase):
             f'/{self.second_author}/{self.second_post.id}/')
         count_comments = len(response.context['comments'])
         self.assertEqual(count_comments, 1)
+
+    def test_cache(self):
+        response1 = self.auth_client.get(reverse('index'))
+        post = Post.objects.create(author=self.author, text='test')
+        response2 = self.auth_client.get(reverse('index'))
+        Post.objects.filter(id=post.id).delete()
+
+        response3 = self.auth_client.get(reverse('index'))
+        self.assertEqual(response2.content, response3.content)
+
+        cache.clear()
+        response4 = self.auth_client.get(reverse('index'))
+        self.assertEqual(response1.content, response4.content)
