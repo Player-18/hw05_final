@@ -74,7 +74,7 @@ class ViewPageContextTest(TestCase):
         post_id = self.test_post.id
         templates_pages_names = {
             reverse('index'): 'index.html',
-            reverse('new_post'): 'new.html',
+            reverse('new_post'): 'new_post.html',
             reverse('group_posts',
                     args=[self.test_group_1.slug]): 'group.html',
             reverse('post_edit', args=[user, post_id]): 'new_post.html',
