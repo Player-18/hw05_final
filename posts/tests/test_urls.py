@@ -81,7 +81,6 @@ class UrlTest(TestCase):
         templates_url_names = {
             'index.html': '/',
             "group.html": f'/group/{self.test_group.slug}/',
-            'new_post.html': '/new/',
             'profile.html': f'/{self.user_1}/',
             'post.html': f'/{self.user_1}/{self.test_post.id}/',
             'new_post.html': f'/{self.user_1}/{self.test_post.id}/edit/',
